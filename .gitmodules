@@ -28,3 +28,5 @@
 [submodule "extern/tuple"]
 	path = extern/tuple
 	url = http://github.com/Jacob-C-Smith/tuple
+[submodule "extern/stack"]
+	path = extern/stack
