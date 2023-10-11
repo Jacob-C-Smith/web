@@ -30,3 +30,4 @@
 	url = http://github.com/Jacob-C-Smith/tuple
 [submodule "extern/stack"]
 	path = extern/stack
+	url = http://github.com/Jacob-C-Smith/stack
