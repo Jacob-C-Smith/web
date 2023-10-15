@@ -1,0 +1,17 @@
+{
+    "path" : "index.html",
+    "get"  : 
+    {
+        "template" : 
+        {
+            "username"  : null,
+            "firstname" : "anon"
+        },
+        "result" : "OK"
+    },
+    "default" :
+    {
+        "path"   : "404.html",
+        "result" : "Not Found"
+    }
+}
