@@ -2,7 +2,7 @@
 cmake_minimum_required (VERSION 3.20)
 
 # This is the name of the repository
-project ("http server")
+project ("web server")
 
 # Set the correct paths
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
@@ -22,7 +22,7 @@ endif ()
 if ( NOT "${HAS_ARRAY}")
     
     # Log
-    message("[http-server] Adding array project")
+    message("[web-server] Adding array project")
     
     # Add the array directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/array ${CMAKE_SOURCE_DIR}/build/array)
@@ -35,7 +35,7 @@ endif()
 if ( NOT "${HAS_STACK}")
 
     # Log
-    message("[http-server] Adding stack project")
+    message("[web-server] Adding stack project")
 
     # Add the stack directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/stack ${CMAKE_SOURCE_DIR}/build/stack)
@@ -48,7 +48,7 @@ endif()
 if ( NOT "${HAS_BASE64}")
 
     # Log
-    message("[http-server] Adding base64 project")
+    message("[web-server] Adding base64 project")
 
     # Add the base64 directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/base-64 ${CMAKE_SOURCE_DIR}/build/base64)
@@ -61,7 +61,7 @@ endif()
 if ( NOT "${HAS_DICT}")
     
     # Log
-    message("[http-server] Adding dict project")
+    message("[web-server] Adding dict project")
     
     # Add the dict directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/dict ${CMAKE_SOURCE_DIR}/build/dict)
@@ -74,7 +74,7 @@ endif()
 if ( NOT "${HAS_CRYPTO}")
     
     # Log
-    message("[http-server] Adding crypto project")
+    message("[web-server] Adding crypto project")
     
     # Add the crypto directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/crypto ${CMAKE_SOURCE_DIR}/build/crypto)
@@ -87,7 +87,7 @@ endif()
 if ( NOT "${HAS_SYNC}")
 
     # Log
-    message("[http-server] Adding sync project")
+    message("[web-server] Adding sync project")
 
     # Add the sync directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/sync ${CMAKE_SOURCE_DIR}/build/sync)
@@ -100,7 +100,7 @@ endif()
 if ( NOT "${HAS_HTTP}")
 
     # Log
-    message("[http-server] Adding http project")
+    message("[web-server] Adding http project")
 
     # Add the http directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/http ${CMAKE_SOURCE_DIR}/build/http)
@@ -113,7 +113,7 @@ endif()
 if ( NOT "${HAS_SOCKET}")
 
     # Log
-    message("[http-server] Adding socket project")
+    message("[web-server] Adding socket project")
 
     # Add the socket directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/socket ${CMAKE_SOURCE_DIR}/build/socket)
@@ -126,7 +126,7 @@ endif()
 if ( NOT "${HAS_QUEUE}")
 
     # Log
-    message("[http-server] Adding queue project")
+    message("[web-server] Adding queue project")
 
     # Add the queue directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/queue ${CMAKE_SOURCE_DIR}/build/queue)
@@ -139,7 +139,7 @@ endif()
 if ( NOT "${HAS_TUPLE}")
 
     # Log
-    message("[http-server] Adding tuple project")
+    message("[web-server] Adding tuple project")
 
     # Add the tuple directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/tuple ${CMAKE_SOURCE_DIR}/build/tuple)
@@ -152,7 +152,7 @@ endif()
 if ( NOT "${HAS_JSON}")
 
     # Log
-    message("[http-server] Adding json project")
+    message("[web-server] Adding json project")
 
     # Add the json directory
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/json ${CMAKE_SOURCE_DIR}/build/json)
@@ -165,20 +165,20 @@ endif()
 if ( NOT "${HAS_HTTP_SERVER}")
 
     # Log
-    message("[http-server] Adding http-server project")
+    message("[web-server] Adding [web-server] project")
 
-    # Let any parent project know that it has the http-server project
+    # Let any parent project know that it has the [web-server] project
     set(HAS_HTTP_SERVER true PARENT_SCOPE)
 endif()
 
 # Add source to this project's executables
-add_executable (http_server_example "main.c")
-add_dependencies(http_server_example json queue array dict sync stack crypto socket tuple http)
-target_include_directories(http_server_example PUBLIC include include/httpserver ${CMAKE_SOURCE_DIR}/extern/array/include/ ${CMAKE_SOURCE_DIR}/extern/dict/include/ ${CMAKE_SOURCE_DIR}/extern/sync/include/ ${CMAKE_SOURCE_DIR}/extern/json/include/ ${CMAKE_SOURCE_DIR}/extern/socket/include/ ${CMAKE_SOURCE_DIR}/extern/queue/include/ ${CMAKE_SOURCE_DIR}/extern/tuple/include/ ${CMAKE_SOURCE_DIR}/extern/stack/include/ ${CMAKE_SOURCE_DIR}/extern/http/include/)
-target_link_libraries(http_server_example http_server json queue array dict sync stack crypto socket tuple http)
+add_executable (web_server_example "main.c")
+add_dependencies(web_server_example json queue array dict sync stack crypto socket tuple http)
+target_include_directories(web_server_example PUBLIC include include/web ${CMAKE_SOURCE_DIR}/extern/array/include/ ${CMAKE_SOURCE_DIR}/extern/dict/include/ ${CMAKE_SOURCE_DIR}/extern/sync/include/ ${CMAKE_SOURCE_DIR}/extern/json/include/ ${CMAKE_SOURCE_DIR}/extern/socket/include/ ${CMAKE_SOURCE_DIR}/extern/queue/include/ ${CMAKE_SOURCE_DIR}/extern/tuple/include/ ${CMAKE_SOURCE_DIR}/extern/stack/include/ ${CMAKE_SOURCE_DIR}/extern/http/include/)
+target_link_libraries(web_server_example web_server json queue array dict sync stack crypto socket tuple http)
 
 # Add source to this project's library
-add_library (http_server SHARED "http-server.c")
-add_dependencies(http_server json queue array dict sync stack crypto socket tuple http)
-target_include_directories(http_server PUBLIC include include/httpserver)
-target_link_libraries(http_server PRIVATE json queue array dict sync stack crypto socket tuple http)
+add_library (web_server SHARED "server.c")
+add_dependencies(web_server json queue array dict sync stack crypto socket tuple http)
+target_include_directories(web_server PUBLIC include include/web)
+target_link_libraries(web_server PRIVATE json queue array dict sync stack crypto socket tuple http)
