@@ -10,20 +10,20 @@
 #include <stdio.h>
 
 // http server 
-#include <http-server/http-server.h>
+#include <web/server.h>
 
 // Entry point
 int main ( int argc, const char *argv[] )
 {
 
     // Initialized data
-    http_server *p_http_server = 0;
+    web_server *p_web_server = 0;
 
     // Construct an http server
-    if ( http_server_construct(&p_http_server, "config.json") == 0 ) goto failed_to_construct_http_server;
+    if ( web_server_construct(&p_web_server, "config.json") == 0 ) goto failed_to_construct_web_server;
 
     // Start the http server
-    if ( http_server_start(p_http_server) == 0 ); 
+    if ( web_server_start(p_web_server) == 0 ); 
 
     // Success
     return EXIT_SUCCESS;
@@ -31,7 +31,7 @@ int main ( int argc, const char *argv[] )
     // Error handling
     {
 
-        failed_to_construct_http_server:
+        failed_to_construct_web_server:
 
             // Write an error message to standard out
             printf("Failed to start HTTP server!\n");
