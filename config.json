@@ -1,4 +1,42 @@
 {
-    "host"  : "localhost",
-    "port"  : 3000
+    "name" : "Big server",
+    "servers" :
+    {
+        "g10.app" : 
+        {
+            "host"   : "localhost",
+            "port"   : 3000,
+            "routes" :
+            {
+                "/" : 
+                {
+                    "get" :
+                    {
+                        "path"     : "index.html",
+                        "template" : 
+                        {
+                            "username"  : null,
+                            "firstname" : "anon"
+                        }
+                    },
+                    "put" : 
+                    {
+                        
+                    }
+                },
+                "/about" : "about/index.html"
+            }
+        },
+        "web.g10.app" : 
+        {
+            "host"   : "localhost",
+            "port"   : 3001,
+            "routes" :
+            {
+                "/"      : "index.html",
+                "/about" : "about/index.html",
+                "/game"  : "some/other/directory/index.html"
+            }
+        }
+    }
 }
