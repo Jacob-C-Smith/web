@@ -34,6 +34,7 @@
 // http submodule
 #include <http/http.h>
 
+// Web
 #include <web/web.h>
 #include <web/route.h>
 
@@ -54,27 +55,27 @@ struct web_server_s
 };
 
 /** !
- * Allocate memory for an HTTP server
+ *  Allocate memory for an HTTP server
  * 
  * @param pp_web_server return
  * 
  * @return 1 on success, 0 on error
-*/
+ */
 int web_server_create ( web_server **const pp_web_server );
 
 /** !
- * Construct an HTTP server from a config file
+ *  Construct an HTTP server from a config file
  * 
  * @param pp_web_server return
  * @param p_path         path to config file
  * 
  * @return 1 on success, 0 on error 
  * 
-*/
+ */
 int web_server_construct ( web_server **const pp_web_server, const char *const p_path );
 
 /** !
- * TCP accept callback
+ *  TCP accept callback
  * 
  * @param _socket the new socket
  * @param ip_address the ip address
@@ -82,14 +83,23 @@ int web_server_construct ( web_server **const pp_web_server, const char *const p
  * @param p_web_server the http server receiving the request
  * 
  * @return 1 on success, 0 on error
-*/
+ */
 int web_server_accept ( socket_tcp _socket, unsigned long ip_address, unsigned short port, web_server *const p_web_server );
 
 /** !
- * Destroy and deallocate an HTTP server and all it's contents.
+ *  Start an HTTP server
+ * 
+ * @param p_web_server the web server
+ * 
+ * @return 1 on success, 0 on error
+ */
+int web_server_start ( web_server *const p_web_server );
+
+/** !
+ *  Destroy and deallocate an HTTP server and all it's contents.
  * 
  * @param pp_web_server return
  * 
  * @return 1 on success, 0 on error 
-*/
+ */
 int web_server_destroy ( web_server **const pp_web_server );
