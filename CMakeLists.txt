@@ -178,7 +178,7 @@ target_include_directories(web_server_example PUBLIC include include/web ${CMAKE
 target_link_libraries(web_server_example web_server json queue array dict sync stack crypto socket tuple http)
 
 # Add source to this project's library
-add_library (web_server SHARED "server.c" "route.c" "web.c" "generator.c")
+add_library (web_server SHARED "server.c" "route.c" "web.c" "template.c")
 add_dependencies(web_server json queue array dict sync stack crypto socket tuple http)
 target_include_directories(web_server PUBLIC include include/web)
 target_link_libraries(web_server PRIVATE json queue array dict sync stack crypto socket tuple http)

@@ -1,7 +1,13 @@
 // Header guard
+#pragma once 
 
 // Web
 #include <web/web.h>
+
+struct web_template_s
+{
+    int i;
+};
 
 /** !
  * Allocate memory for an HTML template
