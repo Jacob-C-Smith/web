@@ -58,3 +58,5 @@ cmake_install.cmake
 build/
 Makefile
 .vscode/settings.json
+web.ico
+target config.json
