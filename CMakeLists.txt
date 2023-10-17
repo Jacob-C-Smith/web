@@ -161,14 +161,14 @@ if ( NOT "${HAS_JSON}")
     set(HAS_JSON true PARENT_SCOPE)
 endif()
 
-# Set the HAS_HTTP_SERVER
-if ( NOT "${HAS_HTTP_SERVER}")
+# Set the HAS_WEB
+if ( NOT "${HAS_WEB}")
 
     # Log
-    message("[web-server] Adding [web-server] project")
+    message("[web-server] Adding web project")
 
-    # Let any parent project know that it has the [web-server] project
-    set(HAS_HTTP_SERVER true PARENT_SCOPE)
+    # Let any parent project know that it has the web project
+    set(HAS_WEB true PARENT_SCOPE)
 endif()
 
 # Add source to this project's executables
@@ -178,7 +178,7 @@ target_include_directories(web_server_example PUBLIC include include/web ${CMAKE
 target_link_libraries(web_server_example web_server json queue array dict sync stack crypto socket tuple http)
 
 # Add source to this project's library
-add_library (web_server SHARED "server.c")
+add_library (web_server SHARED "server.c" "route.c" "web.c" "generator.c")
 add_dependencies(web_server json queue array dict sync stack crypto socket tuple http)
 target_include_directories(web_server PUBLIC include include/web)
 target_link_libraries(web_server PRIVATE json queue array dict sync stack crypto socket tuple http)
