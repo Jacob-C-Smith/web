@@ -1,8 +1,8 @@
 {
-    "$schema": "jsonschema/server.json",
-    "host"   : "localhost",
-    "port"   : 3000,
-    "routes" :
+    "$schema" : "jsonschema/server.json",
+    "host"    : "localhost",
+    "port"    : 3000,
+    "routes"  :
     {
         "/"      : "index.html",
         "/about" : "about/index.html",
