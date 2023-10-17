@@ -1,71 +1,5 @@
 #include <web/server.h>
 
-
-
-/**!
- * Return the size of a file IF buffer == 0 ELSE read a file into buffer
- * 
- * @param path path to the file
- * @param buffer buffer
- * @param binary_mode "wb" IF true ELSE "w"
- * 
- * @return 1 on success, 0 on error
- */
-size_t load_file ( const char *path, void *buffer, bool binary_mode )
-{
-
-    // Argument checking 
-    if ( path == 0 ) goto no_path;
-
-    // Initialized data
-    size_t  ret = 0;
-    FILE   *f   = fopen(path, (binary_mode) ? "rb" : "r");
-    
-    // Check if file is valid
-    if ( f == NULL ) goto invalid_file;
-
-    // Find file size and prep for read
-    fseek(f, 0, SEEK_END);
-    ret = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    
-    // Read to data
-    if ( buffer ) 
-        ret = fread(buffer, 1, ret, f);
-
-    // The file is no longer needed
-    fclose(f);
-    
-    // Success
-    return ret;
-
-    // Error handling
-    {
-
-        // Argument errors
-        {
-            no_path:
-                #ifndef NDEBUG
-                    printf("[web] Null path provided to function \"%s\n", __FUNCTION__);
-                #endif
-
-                // Error
-                return 0;
-        }
-
-        // File errors
-        {
-            invalid_file:
-                #ifndef NDEBUG
-                    printf("[Standard library] Failed to load file \"%s\". %s\n",path, strerror(errno));
-                #endif
-
-                // Error
-                return 0;
-        }
-    }
-}
-
 int web_server_create ( web_server **const pp_web_server )
 {
 
@@ -122,7 +56,7 @@ int web_server_construct ( web_server **const pp_web_server, const char *const p
 
     // Initialized data
     web_server     *p_web_server        = 0;
-    size_t          len                 = load_file(p_path, 0, true);
+    size_t          len                 = web_load_file(p_path, 0, true);
     char           *p_buffer            = calloc(len+1, sizeof(char));
     json_value     *p_value             = 0,
                    *p_port_number       = 0,
@@ -132,7 +66,7 @@ int web_server_construct ( web_server **const pp_web_server, const char *const p
     dict           *p_web_server_routes = 0; 
 
     // Load the file
-    if ( load_file(p_path, p_buffer, true) == 0 ) goto failed_to_load_file;
+    if ( web_load_file(p_path, p_buffer, true) == 0 ) goto failed_to_load_file;
 
     // Parse the file text into a json value
     if ( parse_json_value(p_buffer, 0, &p_value) == 0 ) goto failed_to_parse_json_value;
@@ -326,7 +260,7 @@ int web_server_accept ( socket_tcp _socket, unsigned long ip_address, unsigned s
     {
         //printf("\n\n%s\n\n\n", request);
         http_parse_request(request, &request_type, &path, 0);
-        printf("USER REQUESTED %s\n", path);
+        printf("%s %s\n", http_request_types[request_type-1], path);
         file_path = dict_get(p_web_server->routes, path);
         memset(request, 0, 65535);
         goto done;
@@ -335,7 +269,7 @@ int web_server_accept ( socket_tcp _socket, unsigned long ip_address, unsigned s
     done:;
 
     char cl[6+1];
-    size_t l = load_file(file_path, buf, true);
+    size_t l = web_load_file(file_path, buf, true);
     snprintf(cl, 6, "%d", l);
 
     http_serialize_response(response, HTTP_OK, "%c %cl", "Keep-Alive", cl);

@@ -74,5 +74,17 @@ struct web_server_s;
 struct web_route_s;
 
 // Type definitions
-typedef struct web_server_s web_server;
-typedef struct web_route_s  web_route;
+typedef struct web_server_s   web_server;
+typedef struct web_route_s    web_route;
+typedef struct web_template_s web_template;
+
+/**!
+ * Return the size of a file IF buffer == 0 ELSE read a file into buffer
+ * 
+ * @param path path to the file
+ * @param buffer buffer
+ * @param binary_mode "wb" IF true ELSE "w"
+ * 
+ * @return 1 on success, 0 on error
+ */
+size_t web_load_file ( const char *path, void *buffer, bool binary_mode );
