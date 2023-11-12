@@ -55,15 +55,10 @@ int web_server_construct ( web_server **const pp_web_server, const char *const p
     if ( pp_web_server == (void *) 0 ) goto no_web_server;
 
     // Initialized data
-    web_server     *p_web_server        = 0;
-    size_t          len                 = web_load_file(p_path, 0, true);
-    char           *p_buffer            = calloc(len+1, sizeof(char));
-    json_value     *p_value             = 0,
-                   *p_port_number       = 0,
-                   *p_routes            = 0;
-    unsigned short  port_number         = 0;
-    socket_tcp      _socket             = 0;
-    dict           *p_web_server_routes = 0; 
+    web_server *p_web_server = 0;
+    size_t      len          = web_load_file(p_path, 0, true);
+    char       *p_buffer     = calloc(len+1, sizeof(char));
+    json_value *p_value      = 0;
 
     // Load the file
     if ( web_load_file(p_path, p_buffer, true) == 0 ) goto failed_to_load_file;
@@ -71,6 +66,80 @@ int web_server_construct ( web_server **const pp_web_server, const char *const p
     // Parse the file text into a json value
     if ( parse_json_value(p_buffer, 0, &p_value) == 0 ) goto failed_to_parse_json_value;
 
+    // Parse the json value into a web server
+    if ( web_server_from_json_value(&p_web_server, p_value) == 0 ) goto failed_to_load_web_server;
+
+    // Return a pointer to the caller
+    *pp_web_server = p_web_server;
+
+    // Success
+    return 1;
+
+    // Error handling
+    {
+
+        // Argument errors
+        {
+            no_web_server:
+                #ifndef NDEBUG
+                    printf("[web] Null pointer provided for parameter \"pp_web_server\" in call to function \"%s\"\n", __FUNCTION__);
+                #endif
+
+                // Error
+                return 0;
+        }
+
+        // JSON errors
+        {
+            failed_to_parse_json_value:
+                #ifndef NDEBUG
+                    printf("[web] Failed to parse JSON text in call to function \"%s\"\n", __FUNCTION__);
+                #endif
+
+                // Error 
+                return 0;
+        }
+
+        // Standard library errors
+        {
+            failed_to_load_file:
+                #ifndef NDEBUG
+                    printf("[Standard Library] Failed to open file \"%s\" in call to function \"%s\"\n", p_path, __FUNCTION__);
+                #endif
+
+                // Error
+                return 0;
+        }
+
+        // Web errors
+        {
+            failed_to_load_web_server:
+                #ifndef NDEBUG
+                    printf("[Standard Library] Failed to load web server in call to function \"%s\"\n", __FUNCTION__);
+                #endif
+
+                // Error
+                return 0;
+        }
+    }
+}
+
+int web_server_from_json_value ( web_server **const pp_web_server, const json_value *const p_value )
+{
+
+    // Argument check
+    if ( pp_web_server == (void *) 0 ) goto no_web_server;
+    if ( p_value       == (void *) 0 ) goto no_value;
+
+    // Initialized data
+    web_server     *p_web_server        = 0;
+    json_value     *p_port_number       = 0,
+                   *p_routes            = 0;
+    unsigned short  port_number         = 0;
+    socket_tcp      _socket             = 0;
+    dict           *p_web_server_routes = 0; 
+
+    // Initialized data
     // Parse the json object
     if ( p_value->type == JSON_VALUE_OBJECT )
     {
@@ -165,6 +234,9 @@ int web_server_construct ( web_server **const pp_web_server, const char *const p
         // Error
         return 0;
 
+    // Success
+    return 1;
+
     // Error handling
     {
 
@@ -177,6 +249,14 @@ int web_server_construct ( web_server **const pp_web_server, const char *const p
 
                 // Error
                 return 0;
+
+            no_value:
+                #ifndef NDEBUG
+                    printf("[web] Null pointer provided for parameter \"p_value\" in call to function \"%s\"\n", __FUNCTION__);
+                #endif
+
+                // Error
+                return 0;            
         }
 
         // HTTP server errors
@@ -190,33 +270,11 @@ int web_server_construct ( web_server **const pp_web_server, const char *const p
                 return 0;
         }
 
-        // JSON errors
-        {
-            failed_to_parse_json_value:
-                #ifndef NDEBUG
-                    printf("[web] Failed to parse JSON text in call to function \"%s\"\n", __FUNCTION__);
-                #endif
-
-                // Error 
-                return 0;
-        }
-
         // Socket errors
         {
             failed_to_create_tcp_socket:
                 #ifndef NDEUBG
                     printf("[web] Call to function \"socket_tcp_create\" returned an erroneous value in call to function \"%s\"\n", __FUNCTION__);
-                #endif
-
-                // Error
-                return 0;
-        }
-
-        // Standard library errors
-        {
-            failed_to_load_file:
-                #ifndef NDEBUG
-                    printf("[Standard Library] Failed to open file \"%s\" in call to function \"%s\"\n", p_path, __FUNCTION__);
                 #endif
 
                 // Error

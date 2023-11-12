@@ -67,7 +67,7 @@ int web_server_create ( web_server **const pp_web_server );
  *  Construct an HTTP server from a config file
  * 
  * @param pp_web_server return
- * @param p_path         path to config file
+ * @param p_path        path to config file
  * 
  * @return 1 on success, 0 on error 
  * 
@@ -75,11 +75,21 @@ int web_server_create ( web_server **const pp_web_server );
 int web_server_construct ( web_server **const pp_web_server, const char *const p_path );
 
 /** !
+ *  Construct an HTTP server from a json value
+ * 
+ * @param pp_web_servrer return
+ * @param p_value        the json value
+ * 
+ * @param pp_web_server return
+*/
+int web_server_from_json_value ( web_server **const pp_web_server, const json_value *const p_value );
+
+/** !
  *  TCP accept callback
  * 
- * @param _socket the new socket
- * @param ip_address the ip address
- * @param port the port
+ * @param _socket      the new socket
+ * @param ip_address   the ip address
+ * @param port         the port
  * @param p_web_server the http server receiving the request
  * 
  * @return 1 on success, 0 on error
