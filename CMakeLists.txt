@@ -51,7 +51,7 @@ if ( NOT "${HAS_BASE64}")
     message("[web-server] Adding base64 project")
 
     # Add the base64 directory
-    add_subdirectory(${CMAKE_SOURCE_DIR}/extern/base-64 ${CMAKE_SOURCE_DIR}/build/base64)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/extern/base64 ${CMAKE_SOURCE_DIR}/build/base64)
 
     # Let any parent project know that this project has base64
     set(HAS_BASE64 true PARENT_SCOPE)
@@ -175,10 +175,10 @@ endif()
 add_executable (web_server_example "main.c")
 add_dependencies(web_server_example json queue array dict sync stack crypto socket tuple http)
 target_include_directories(web_server_example PUBLIC include include/web ${CMAKE_SOURCE_DIR}/extern/array/include/ ${CMAKE_SOURCE_DIR}/extern/dict/include/ ${CMAKE_SOURCE_DIR}/extern/sync/include/ ${CMAKE_SOURCE_DIR}/extern/json/include/ ${CMAKE_SOURCE_DIR}/extern/socket/include/ ${CMAKE_SOURCE_DIR}/extern/queue/include/ ${CMAKE_SOURCE_DIR}/extern/tuple/include/ ${CMAKE_SOURCE_DIR}/extern/stack/include/ ${CMAKE_SOURCE_DIR}/extern/http/include/)
-target_link_libraries(web_server_example web_server json queue array dict sync stack crypto socket tuple http)
+target_link_libraries(web_server_example web json queue array dict sync stack crypto socket tuple http)
 
 # Add source to this project's library
-add_library (web_server SHARED "server.c" "route.c" "web.c" "template.c")
-add_dependencies(web_server json queue array dict sync stack crypto socket tuple http)
-target_include_directories(web_server PUBLIC include include/web)
-target_link_libraries(web_server PRIVATE json queue array dict sync stack crypto socket tuple http)
+add_library (web SHARED "server.c" "route.c" "web.c" "template.c")
+add_dependencies(web json queue array dict sync stack crypto socket tuple http)
+target_include_directories(web PUBLIC include include/web)
+target_link_libraries(web PRIVATE json queue array dict sync stack crypto socket tuple http)
