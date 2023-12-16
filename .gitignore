@@ -61,3 +61,4 @@ Makefile
 web.ico
 target config.json
 Icon?
+.DS_Store
