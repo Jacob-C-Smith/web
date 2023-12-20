@@ -182,7 +182,7 @@ target_include_directories(web_server_example PUBLIC ${WEB_INCLUDE_DIR} ${ARRAY_
 target_link_libraries(web_server_example web json queue array dict sync stack crypto socket tuple http)
 
 # Add source to this project's library
-add_library (web SHARED "server.c" "route.c" "web.c" "template.c" "resource.c")
+add_library (web SHARED "server.c" "route.c" "web.c" "template.c" "resource.c" )
 add_dependencies(web json queue array dict sync stack crypto socket tuple http)
 target_include_directories(web PUBLIC ${WEB_INCLUDE_DIR} ${ARRAY_INCLUDE_DIR} ${DICT_INCLUDE_DIR} ${SYNC_INCLUDE_DIR} ${JSON_INCLUDE_DIR} ${SOCKET_INCLUDE_DIR} ${QUEUE_INCLUDE_DIR} ${TUPLE_INCLUDE_DIR} ${STACK_INCLUDE_DIR} ${HTTP_INCLUDE_DIR})
 target_link_libraries(web PRIVATE json queue array dict sync stack crypto socket tuple http)
