@@ -71,11 +71,13 @@
 
 // Forward declarations
 struct web_server_s;
+struct web_resource_s;
 struct web_route_s;
 struct web_template_s;
 
 // Type definitions
 typedef struct web_server_s   web_server;
+typedef struct web_resource_s web_resource;
 typedef struct web_route_s    web_route;
 typedef struct web_template_s web_template;
 

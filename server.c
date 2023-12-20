@@ -134,10 +134,12 @@ int web_server_from_json_value ( web_server **const pp_web_server, const json_va
     // Initialized data
     web_server     *p_web_server        = 0;
     json_value     *p_port_number       = 0,
-                   *p_routes            = 0;
+                   *p_routes            = 0,
+                   *p_resources         = 0;
     unsigned short  port_number         = 0;
     socket_tcp      _socket             = 0;
-    dict           *p_web_server_routes = 0; 
+    dict           *p_web_server_routes = 0;
+    dict           *p_web_server_resources = 0; 
 
     // Initialized data
     // Parse the json object
@@ -152,6 +154,9 @@ int web_server_from_json_value ( web_server **const pp_web_server, const json_va
 
         // Get the routes
         p_routes = dict_get(p_dict, "routes");
+
+        // Get the resources
+        p_resources = dict_get(p_dict, "resources");
 
         // Error checking
         // TODO: 
@@ -177,6 +182,8 @@ int web_server_from_json_value ( web_server **const pp_web_server, const json_va
             dict *p_dict = p_routes->object;
             char *p_routes[1024] = { 0 };
             size_t route_count = dict_keys(p_dict, 0);
+
+            // Dump the route keys
             dict_keys(p_dict, &p_routes);
      
             // Construct a dictionary to store routes
@@ -203,6 +210,40 @@ int web_server_from_json_value ( web_server **const pp_web_server, const json_va
             // Error checking
             // TODO:         
         }
+
+        // Parse the resources
+        if ( p_resources->type == JSON_VALUE_ARRAY )
+        {
+            
+            // Initialized data
+            dict *p_dict = p_resources->object;
+            char *p_resources[1024] = { 0 };
+            size_t resource_count = dict_keys(p_dict, 0);
+
+            // Dump the resource keys
+            dict_keys(p_dict, &p_resources);
+
+            // Construct a dictionary to store resources
+            if ( dict_construct(&p_web_server_resources, resource_count, 0) == 0 ) goto failed_to_construct_dict;
+
+            // Iterate over each resource
+            for (size_t i = 0; i < resource_count; i++)
+            {
+                
+                // Initialized data
+                json_value   *p_resource     = dict_get(p_dict, p_resources[i]);
+                web_resource *p_web_resource = 0;
+
+                // Construct the resource from the JSON value
+                if ( web_resource_from_json(&p_web_resource, p_resource) == 0 ) goto failed_to_construct_web_resource;
+
+                // Store the resource in the resources dictionary
+                dict_add(p_web_server->resources, p_web_resource->name, p_web_resource);
+            }
+
+            // Error checking
+            // TODO:   
+        }
     }
 
     // Construct http server struct fields
@@ -219,7 +260,8 @@ int web_server_from_json_value ( web_server **const pp_web_server, const json_va
             .port   = port_number,
             .socket = _socket
         },
-        .routes = p_web_server_routes
+        .routes = p_web_server_routes,
+        .resources = p_web_server_resources
     };
 
     // Return a pointer to the caller
@@ -231,6 +273,8 @@ int web_server_from_json_value ( web_server **const pp_web_server, const json_va
     // TODO:
     failed_to_construct_web_route:
     failed_to_construct_dict:
+    failed_to_construct_web_resource:
+
         // Error
         return 0;
 
@@ -286,6 +330,9 @@ int web_server_from_json_value ( web_server **const pp_web_server, const json_va
 int web_server_start ( web_server *const p_web_server )
 {
 
+    // Argument check
+    if ( p_web_server == (void *) 0 ) goto no_web_server;
+
     // Set the running flag
     p_web_server->context.running = true;
 
@@ -299,46 +346,60 @@ int web_server_start ( web_server *const p_web_server )
     
     // Success
     return 1;
+
+    // Error handling
+    no_web_server:
+
+        // Error
+        return 0;
 }
 
 int web_server_accept ( socket_tcp _socket, unsigned long ip_address, unsigned short port, web_server *const p_web_server )
 {
 
+    // Argument check
+    if ( p_web_server == (void *) 0 ) goto no_web_server;
+
+    // Initialized data
     char response[65535+1];
-
-    char buf[65535+1];
-
     char request[65535+1];
-    char *path = 0;
-    enum http_request_type_e request_type;
-    char *file_path = 0;
+    //http_message *p_request = 0;
+    //http_message *p_response = 0;
 
+    // Wait for an http request
     wait:
-    if ( socket_tcp_receive(_socket,request,65535) == 1 )
+    if ( socket_tcp_receive(_socket, request, 65535) == 1 )
     {
-        //printf("\n\n%s\n\n\n", request);
-        http_parse_request(request, &request_type, &path, 0);
-        printf("%s %s\n", http_request_types[request_type-1], path);
-        file_path = dict_get(p_web_server->routes, path);
-        memset(request, 0, 65535);
+
+        // Parse the http request text
+        //if ( http_parse_request(request, p_request) == 0 ) goto failed_to_parse_http_request;
+
+        // Parse the http request struct
+        //if ( p_request.request.)
+
+        // Done
         goto done;
     }
     goto wait;
     done:;
 
-    char cl[6+1];
-    size_t l = web_load_file(file_path, buf, true);
-    snprintf(cl, 6, "%d", l);
+    // Serialize an http request
+    //if ( http_serialize_response(&response, p_response) == 0 ) goto failed_to_serialize_response;
 
-    http_serialize_response(response, HTTP_OK, "%c %cl", "Keep-Alive", cl);
-    
-    strcat(response, "\n\r");
-    strcat(response, buf);
-
+    // Send the response
     socket_tcp_send(_socket, response, strlen(response));
 
     // Success
     return 1;
+
+    // Error handling
+    no_web_server:
+    failed_to_parse_http_request:
+    failed_to_serialize_response:
+
+        // Error
+        return 0;
+
 }
 
 int web_server_destroy ( web_server **const pp_web_server )

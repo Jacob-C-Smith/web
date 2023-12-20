@@ -37,6 +37,7 @@
 // Web
 #include <web/web.h>
 #include <web/route.h>
+#include <web/resource.h>
 
 struct web_server_s
 {
@@ -52,6 +53,7 @@ struct web_server_s
     } context;
 
     dict *routes;
+    dict *resources;
 };
 
 /** !
