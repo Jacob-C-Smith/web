@@ -23,7 +23,8 @@ int main ( int argc, const char *argv[] )
     if ( web_server_construct(&p_web_server, "config.json") == 0 ) goto failed_to_construct_web_server;
 
     // Start the http server
-    if ( web_server_start(p_web_server) == 0 ); 
+    if ( web_server_start(p_web_server) == 0 )
+        ; 
 
     // Success
     return EXIT_SUCCESS;
